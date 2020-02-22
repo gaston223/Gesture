@@ -35,11 +35,11 @@ const Navbar = ({ history}) => {
                   <NavLink to="/register" className="nav-link">Inscription</NavLink>
               </li>
               <li className="nav-item">
-                  <NavLink to="/login" className="btn btn-success">Connexion</NavLink>
+                  <NavLink to="/login" className="btn btn-success"><i className="fas fa-user-lock"></i> Connexion</NavLink>
               </li>           
             </> 
           )) || (
-              <li className="nav-item"><button onClick={handleLogout} className="btn btn-danger">Deconnexion</button></li>
+              <li className="nav-item"><button onClick={handleLogout} className="btn btn-danger"><i className="fas fa-power-off"></i> Deconnexion</button></li>
           )}
            
         </ul>

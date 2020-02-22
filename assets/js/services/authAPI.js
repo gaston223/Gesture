@@ -46,7 +46,7 @@ function setup(){
     //2. Si le token est encore valide
     if(token){
         const {exp: expiration}= jwtDecode(token)
-        console.log(expiration);
+        //console.log(expiration);
         if(expiration *1000 > new Date().getTime()){
             setAxiosToken(token);
         }

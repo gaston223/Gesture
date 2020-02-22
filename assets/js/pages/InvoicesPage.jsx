@@ -2,6 +2,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import Pagination from '../components/Pagination';
 import invoicesAPI from '../services/invoicesAPI';
+import {Link} from "react-router-dom";
 
 const STATUS_CLASSES ={
     PAID: "success",
@@ -85,7 +86,11 @@ const InvoicesPage = props => {
 
     return (  
         <>
-        <h1>Liste des Factures</h1>
+        <div className=" mb-3 d-flex justify-content-between align-items-center">
+                <h1>Liste des factures</h1>
+                <Link to="/invoices/new" className="btn btn-primary"> <i className="fas fa-user-plus"></i>&nbsp; Créer une facture</Link>
+                
+            </div>
 
         <div className="form-group">
                 <input type="text" onChange={handleSearch} value={search} className="form-control" placeholder="Rechercher ..."/>
@@ -115,8 +120,8 @@ const InvoicesPage = props => {
                         </td>
                         <td className="text-center">{formatDate(invoice.sentAt)}</td>
                         <td>
-                            <button className="btn btn-sm btn-warning mr-1">Editer</button>
-                            <button className="btn btn-sm btn-danger" onClick={()=>handleDelete(invoice.id)}>Supprimer</button>
+                            <Link to={"/invoices/" + invoice.id} className="btn btn-sm btn-warning mr-1"> <i className="far fa-edit"></i> Editer</Link>
+                            <button className="btn btn-sm btn-danger" onClick={()=>handleDelete(invoice.id)}><i className="fas fa-trash-alt"></i> Supprimer</button>
                         </td>
                     </tr>
                     )}

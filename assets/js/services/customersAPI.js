@@ -11,6 +11,19 @@ function deleteCustomer(id){
         .then(response =>console.log("ok"))
 }
 
+function find(id){
+    return axios.get("http://127.0.0.1:8000/api/customers/"+ id)
+        .then(response => response.data);
+}
+
+function update(id){
+    return axios.put("http://127.0.0.1:8000/api/customers/"+ id, customer);
+}
+
+function create(customer){
+   return axios.post("http://127.0.0.1:8000/api/customers", customer);
+}
+
 export default {
-    findAll, delete: deleteCustomer
+    findAll, delete: deleteCustomer, find, update, create
 };
