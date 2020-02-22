@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Field from '../components/forms/field';
 import CustomersAPI from '../services/customersAPI';
+import { toast } from 'react-toastify';
+import ContentLoader from 'react-content-loader';
 
 const CustomerPage =({match, history}) => {
 
@@ -22,6 +24,7 @@ const CustomerPage =({match, history}) => {
     })
 
     const[editing, setEditing] = useState(false);
+  
 
     // Recuperation du customer en fonction de l'identifiant
     const fetchCustomer = async id =>{
@@ -29,35 +32,34 @@ const CustomerPage =({match, history}) => {
         const{ firstName, lastName, email, company} = await CustomersAPI.find(id);
         setCustomer({ firstName, lastName, email, company});
     }catch(error){
-        console.log(error.response);
-        //TODO Notificatiobs flash d'une erreur
+        toast.error("Le client n'a pas pu être chargé ! ");
         history.replace("/customers");
     }
-}
+};
     useEffect(() => {
-    if (id !== "new") {
+    if (id !== "new") {  
       setEditing(true);
       fetchCustomer(id);
     }
   }, [id]);
 
-    // Gestion de la soumission du formulaire
+   
     const handleChange = ({currentTarget})=>{
         const {value, name} = currentTarget;
         setCustomer({... customer,[name]:value});
-    }
+    };
 
+     // Gestion de la soumission du formulaire
     const handleSubmit =async event=>{
         event.preventDefault();
-        try {            
+        try {   
+            setErrors({});         
             if(editing){
                 await CustomersAPI.update(id, customer);
-                console.log(response.data);
-                //TODO : Flash notifications de succès
+                toast.success("Le client a bien été modifié");                
             }else{
              await CustomersAPI.create(customer);
-
-             //TODO : Flash notifications de succès
+             toast.success("Le client a bien été crée");
              history.replace("/customers");
         }
         } catch({response}) {
@@ -69,13 +71,14 @@ const CustomerPage =({match, history}) => {
                         apiErrors[propertyPath] = message
                     });
                     setErrors(apiErrors);
-                    //TODO : Flash notifications d'erreurs
+                    toast.error("Des erreurs dans votre formulaire")
                 }
             }
         };
 
     return ( <>
         {(!editing && <h1>Création d'un client</h1>) || (<h1>Modification d'un client</h1>) }
+
         <form onSubmit={handleSubmit}>
             <Field name="lastName" label="Nom de famille" placeholder="Nom de famille du client" value={customer.lastName} onChange={handleChange} error={errors.lastName} />
             <Field name="firstName" label="Prénom" placeholder="Prénom du client" value={customer.firstName} onChange={handleChange} error={errors.firstName}  />

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Field from '../components/forms/field';
 import usersAPI from '../services/usersAPI';
+import { toast } from 'react-toastify';
 
 const RegisterPage = ({history})=> {
 
@@ -35,11 +36,13 @@ const RegisterPage = ({history})=> {
         if(user.password!== user.passwordConfirm){
             apiErrors.passwordConfirm="Votre confirmation de mot de passe n'est pas ideentique au mot de passe saisi";
             setErrors(apiErrors);
+            toast.error("Des erreurs dans votre formulaire !");
             return; 
         }
         try{
             await usersAPI.register(user);
             //TODO : Flash success
+            toast.success("Vous êtes désormais inscrits, vous pouvez vous connecter !");
             setErrors({});
             history.replace('/login');
             
@@ -54,6 +57,7 @@ const RegisterPage = ({history})=> {
                 });
                 setErrors(apiErrors);
             }
+            toast.error("Des erreurs dans votre formulaire !");
         }
     }
 

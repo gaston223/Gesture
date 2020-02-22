@@ -7,8 +7,7 @@ function findAll(){
 
 function deleteInvoices(id){
     return axios 
-        .delete("http://127.0.0.1:8000/api/invoices/" +id)
-        .then(response =>console.log("ok"))
+        .delete("http://127.0.0.1:8000/api/invoices/" +id);      
 }
 
 function find(id){

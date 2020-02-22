@@ -21,6 +21,8 @@ import authAPI from './services/authAPI';
 import CustomerPage from './pages/CustomerPage';
 import InvoicePage from './pages/InvoicePage';
 import RegisterPage from './pages/RegisterPage';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
@@ -56,6 +58,7 @@ const App=()=>{
             </Switch>
         </main>
     </HashRouter>
+    <ToastContainer position={toast.POSITION.BOTTOM_LEFT} />
     </AuthContext.Provider>
     );
 };

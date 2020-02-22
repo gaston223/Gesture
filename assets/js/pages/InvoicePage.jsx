@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Field from '../components/forms/field';
 import Select from '../components/forms/Select';
-import { Link } from 'react-router-dom';
 import CustomersAPI from '../services/customersAPI';
-import axios from 'axios';
 import InvoicesAPI from '../services/invoicesAPI';
+import FormContentLoader from '../components/loaders/FormContentLoader';
+import ContentLoader from 'react-content-loader';
 
 const InvoicePage = ({history, match}) => {
 
@@ -18,21 +20,24 @@ const InvoicePage = ({history, match}) => {
 
     const[customers, setCustomers] = useState([]);
     const[editing, setEditing] = useState(false);
+    
 
     const [errors, setErrors]= useState({
         amount: "",
         customer:"",
         status:'',
-    })
+    });
+    const[loading, setLoading]= useState(true);
 
     //Récupération des clients
     const fetchCustomers = async () =>{
         try{
            const data= await CustomersAPI.findAll();
            setCustomers(data);
+           setLoading(false);
            if(!invoice.customer) setInvoice({...invoice, customer: data[0].id});
         } catch (error){
-              //TODO : Flash Notif erreurs
+            toast.error("Impossible de charger les clients !")
             history.replace('/invoices')
         }
     }
@@ -43,10 +48,10 @@ const InvoicePage = ({history, match}) => {
         try{
              const { amount, status, customer }= await InvoicesAPI.find(id);
                 setInvoice({amount, status, customer: customer.id});
+                setLoading(false);
 
         }catch(error){
-            console.log(error.response);
-            //TODO : Flash Notif erreurs
+            toast.error("Impossible de charger la facture demandée");
             history.replace('/invoices')
         }
     }
@@ -54,7 +59,7 @@ const InvoicePage = ({history, match}) => {
     //Récupération de la liste des clients à chaque chargement du composant
     useEffect( ()=> {
         fetchCustomers();
-    }, [])
+    }, []);
 
     //Récupération de la bonne facture quand l'identifiant de l'url change
     useEffect( ()=> {
@@ -62,7 +67,7 @@ const InvoicePage = ({history, match}) => {
             setEditing(true);
             fetchInvoices(id);
         }
-    }, [id])
+    }, [id]);
 
     // Gestion des changements d'input
     const handleChange = ({currentTarget})=>{
@@ -76,10 +81,10 @@ const InvoicePage = ({history, match}) => {
         try{
             if(editing){
                  await InvoicesAPI.update(id, invoice);
-                // TODO Flash notif success
+                toast.success("La facture a bien été modifiée");
             } else {
                 await InvoicesAPI.create(invoice);
-                // TODO Flash notif succes
+                toast.success("La facture a bien été créee");
                 history.replace("/invoices");
             }
         }catch({response}) {
@@ -91,15 +96,20 @@ const InvoicePage = ({history, match}) => {
                         apiErrors[propertyPath] = message
                     });
                     setErrors(apiErrors);
-                    //TODO : Flash notifications d'erreurs
+                    toast.error("Des erreurs dans votre formulaire");
                 }
             }
     };
 
 
     return ( <>
+
+        
         {(editing && <h1>Modification d'une facture</h1>) || (<h1>Création d'une facture</h1>)}
-        <form onSubmit={handleSubmit}>
+
+        {loading && <ContentLoader />}
+
+        {!loading && <form onSubmit={handleSubmit}>
             <Field name="amount" type="number" placeholder="Montant de la facture" onChange={handleChange} value={invoice.amount} error={errors.amount} onChange={handleChange} />
 
             
@@ -126,7 +136,7 @@ const InvoicePage = ({history, match}) => {
             </div>
 
             
-        </form>
+        </form>}
 
     </> );
 }
