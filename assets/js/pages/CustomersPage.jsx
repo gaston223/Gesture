@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import TableLoader from '../components/loaders/Tableloader';
 
 
-const CustomersPage = (props) => {
+const CustomersPage = props => {
 
     const[customers, setCustomers]=useState([]);
     const[currentPage, setCurrentPage]= useState(1);
